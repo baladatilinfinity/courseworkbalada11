@@ -18,6 +18,16 @@ public final class DBUtil {
     private static final String USER = env("DB_USER", "root");
     private static final String PASSWORD = env("DB_PASSWORD", "");
 
+    // У Tomcat драйвер із WEB-INF/lib не реєструється автоматично,
+    // тому клас драйвера завантажується явно.
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new ExceptionInInitializerError("Не знайдено JDBC-драйвер MySQL (mysql-connector-j)");
+        }
+    }
+
     private DBUtil() {
     }
 
@@ -29,5 +39,4 @@ public final class DBUtil {
         String value = System.getenv(name);
         return value == null || value.isBlank() ? defaultValue : value;
     }
-
 }
